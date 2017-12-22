@@ -37,6 +37,8 @@ var secureTabs = tabs.map(TabIdFixer.fixTab) // collect their id
 ...
 ```
 
+Nothing will happen when the given `tabs.Tab` object has correct `id`.
+
 ### `TabIdFixer.fixTabId()`
 
 This method is a primitive method for cases only tab id is available but the `tabs.Tab` object is not given. For example:
@@ -47,4 +49,7 @@ browser.runtime.onMessage.addListener((aMessage, aSender) => {
   ...
 });
 ```
+
+The given id itself will be returned if it is correct id.
+
 
