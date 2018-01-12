@@ -58,7 +58,7 @@ var TabIdFixer = {
             }
           })(),
           (async () => {
-            this.windowId = (await browser.runtime.getCurrent()).id;
+            this.windowId = (await browser.windows.getCurrent()).id;
           })()
         ]);
       }
