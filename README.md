@@ -1,7 +1,7 @@
 # webextensions-lib-tab-id-fixer
 
 Helps to operate tabs across multiple windows, against the [bug 1398272](https://bugzilla.mozilla.org/show_bug.cgi?id=1398272).
-The bug has been fixed at Firefox 61, so this library is obsoolete for Firefox 61 and later.
+The bug has been fixed at Firefox 61, so this library is obsolete for Firefox 61 and later.
 
 ## Required permissions
 
