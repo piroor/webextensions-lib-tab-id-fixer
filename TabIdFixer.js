@@ -55,7 +55,7 @@ var TabIdFixer = {
     Promise.all([
       browser.runtime.getBrowserInfo(),
       browser.runtime.getBackgroundPage()
-    ]).then(results => {
+    ]).then(async results => {
       const [browserInfo, backgroundPage] = results;
       this.isBackground = (backgroundPage == window);
       if (parseInf(browserInfo.split('.')[0]) >= 61) {
