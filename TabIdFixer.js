@@ -1,5 +1,6 @@
 /*
  Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+ (required only on Firefox 60 or older versions)
 
  license: The MIT License, Copyright (c) 2017-2018 YUKI "Piro" Hiroshi
  original:
