@@ -59,7 +59,7 @@ var TabIdFixer = {
     ]).then(async results => {
       const [browserInfo, backgroundPage] = results;
       this.isBackground = (backgroundPage == window);
-      if (parseInt(browserInfo.split('.')[0]) >= 61) {
+      if (parseInt(browserInfo.version.split('.')[0]) >= 61) {
         this.required = false;
         this.endListen();
         this.wrongToCorrect = {};
