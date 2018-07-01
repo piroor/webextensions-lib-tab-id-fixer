@@ -1,19 +1,25 @@
 /*
  Workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
 
- license: The MIT License, Copyright (c) 2017 YUKI "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2017-2018 YUKI "Piro" Hiroshi
  original:
    http://github.com/piroor/webextensions-lib-tab-id-fixer
 */
 'use strict';
 
 var TabIdFixer = {
+  required: true,
+
   // public methods
   fixTabId(aTabId) {
+    if (!this.required)
+      return aTabId;
     return this.wrongToCorrect[aTabId] || aTabId;
   },
 
   fixTab(aTab) {
+    if (!this.required)
+      return aTab;
     var correctId = this.fixTabId(aTab.id);
     if (correctId)
       aTab.id = correctId;
@@ -46,8 +52,19 @@ var TabIdFixer = {
     this.onMessage = this.onMessage.bind(this);
     browser.runtime.onMessage.addListener(this.onMessage);
 
-    browser.runtime.getBackgroundPage().then(async (aWindow) => {
-      this.isBackground = (aWindow == window);
+    Promise.all([
+      browser.runtime.getBrowserInfo(),
+      browser.runtime.getBackgroundPage()
+    ]).then(results => {
+      const [browserInfo, backgroundPage] = results;
+      this.isBackground = (backgroundPage == window);
+      if (parseInf(browserInfo.split('.')[0]) >= 61) {
+        this.required = false;
+        this.endListen();
+        this.wrongToCorrect = {};
+        this.correctToWrong = {};
+        this.onInitialized();
+      }
       if (!this.isBackground) {
         await Promise.all([
           (async () => {
@@ -62,15 +79,18 @@ var TabIdFixer = {
           })()
         ]);
       }
+      window.addEventListener('unload', () => {
+        this.endListen();
+      }, { once: true });
       this.onInitialized();
     });
+  },
 
-    window.addEventListener('unload', () => {
-      browser.tabs.onRemoved.removeListener(this.onTabRemoved);
-      browser.tabs.onAttached.removeListener(this.onTabAttached);
-      if (this.isBackground)
-        browser.runtime.onMessage.removeListener(this.onMessage);
-    }, { once: true });
+  endListen() {
+    browser.tabs.onRemoved.removeListener(this.onTabRemoved);
+    browser.tabs.onAttached.removeListener(this.onTabAttached);
+    if (this.isBackground)
+      browser.runtime.onMessage.removeListener(this.onMessage);
   },
 
   onTabRemoved(aTabId, aRemoveInfo) {
